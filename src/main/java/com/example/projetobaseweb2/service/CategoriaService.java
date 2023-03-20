@@ -1,34 +1,60 @@
 package com.example.projetobaseweb2.service;
 
-import com.example.projetobaseweb2.model.Categoria;
+import com.example.projetobaseweb2.model.dto.CategoriaDTO;
+import com.example.projetobaseweb2.model.entity.CategoriaEntity;
 import com.example.projetobaseweb2.repository.CategoriaDBMemory;
+import com.example.projetobaseweb2.repository.CategoriaRepository;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CategoriaService {
-    private CategoriaDBMemory repository = new CategoriaDBMemory();
-    public Categoria pegarUm(Integer id){
-        return repository.pegarUm(id);
+    @Autowired
+    private CategoriaRepository repository;
+    public CategoriaDTO pegarCategoriaDTOById(Integer id){
+        Optional<CategoriaEntity> categoriaEntityOp = repository.findById(id);
+
+        if(categoriaEntityOp.isPresent()){
+            CategoriaEntity categoriaEntity = categoriaEntityOp.get();
+            return new CategoriaDTO().update(categoriaEntity);
+
+        }
+
+        throw new EntityNotFoundException();
     }
-    public List<Categoria> buscarTodos(){
-        return repository.buscarTodos();
+    public List<CategoriaDTO> listar(){
+        List<CategoriaEntity> listaEntities = repository.findAll();
+        return listaEntities.stream()
+                .map(categoriaEntity -> new CategoriaDTO().update(categoriaEntity))
+                .toList();
     }
 
-    public Categoria criar(Categoria categoria){
-        return repository.criar(categoria);
+    public CategoriaDTO criar(CategoriaDTO categoriaDTO){
+        CategoriaEntity categoria = new CategoriaEntity().update(categoriaDTO);
+        categoria = repository.save(categoria);
+
+        return new CategoriaDTO().update(categoria);
     }
-    public Categoria editar(Categoria categoria, Integer id){
-        Categoria categoriaFromDB = repository.pegarUm(id);
-        if(categoriaFromDB == null) return null;
+    public CategoriaDTO editar(CategoriaDTO categoria, Integer id){
+        Optional<CategoriaEntity> categoriaEntityOp = repository.findById(id);
 
-        Categoria categoriaAtualizada = categoriaFromDB.update(categoria);
+        if(categoriaEntityOp.isPresent()){
+            CategoriaEntity categoriaEntity = categoriaEntityOp.get();
+            return new CategoriaDTO().update(categoriaEntity);
 
-        return repository.editar(categoriaAtualizada);
+        }
+
+        throw new EntityNotFoundException();
     }
     public void deletar(Integer id){
-        repository.deletar(id);
+        Optional<CategoriaEntity> categoriaEntityOp = repository.findById(id);
+
+        categoriaEntityOp.ifPresent(categoriaEntity -> repository.delete(categoriaEntity));
+
+        throw new EntityNotFoundException();
     }
 }

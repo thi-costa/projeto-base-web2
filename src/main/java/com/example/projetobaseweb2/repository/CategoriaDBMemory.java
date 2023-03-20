@@ -1,31 +1,31 @@
 package com.example.projetobaseweb2.repository;
 
-import com.example.projetobaseweb2.model.Categoria;
+import com.example.projetobaseweb2.model.dto.CategoriaDTO;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class CategoriaDBMemory {
-    private List<Categoria> lista = new ArrayList<>();
+    private List<CategoriaDTO> lista = new ArrayList<>();
     private Integer contador = 1;
-    public List<Categoria> buscarTodos(){
+    public List<CategoriaDTO> buscarTodos(){
         return lista;
     }
-    public Categoria pegarUm(Integer id){
-        for(Categoria categoria: lista){
+    public CategoriaDTO pegarUm(Integer id){
+        for(CategoriaDTO categoria : lista){
             if(categoria.getId().equals(id)) return categoria;
         }
         return null;
     }
 
-    public Categoria criar(Categoria categoria){
-        categoria.setId(contador);
-        lista.add(categoria);
+    public CategoriaDTO criar(CategoriaDTO categoriaDTO){
+        categoriaDTO.setId(contador);
+        lista.add(categoriaDTO);
         contador++;
 
-        return categoria;
+        return categoriaDTO;
     }
-    public Categoria editar(Categoria categoria){
+    public CategoriaDTO editar(CategoriaDTO categoria){
         for(int i = 0; i < lista.size(); i++){
             if(lista.get(i).getId().equals(categoria.getId())){
                 lista.set(i, categoria);
@@ -37,8 +37,8 @@ public class CategoriaDBMemory {
     public String deletar(Integer id){
         int contador = 0;
 
-        for(Categoria categoria: lista){
-            if(categoria.getId().equals(id)){
+        for(CategoriaDTO categoriaDTO : lista){
+            if(categoriaDTO.getId().equals(id)){
                 lista.remove(contador);
                 return "Categoria com id " + id + " deletado com sucessp!";
             }
