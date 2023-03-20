@@ -1,13 +1,11 @@
 package com.example.projetobaseweb2.controller;
 
-import com.example.projetobaseweb2.model.Categoria;
+import com.example.projetobaseweb2.model.dto.CategoriaDTO;
 import com.example.projetobaseweb2.service.CategoriaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/categorias")
@@ -16,24 +14,24 @@ public class CategoriaController {
     private CategoriaService categoriaService;
 
     @GetMapping
-    public List<Categoria> listar(){
-        return categoriaService.buscarTodos();
+    public List<CategoriaDTO> listar(){
+        return categoriaService.listar();
     }
     @GetMapping("/{id}")
-    public Categoria pegarUm(@PathVariable("id") Integer id){
-        return categoriaService.pegarUm(id);
+    public CategoriaDTO pegarCategoriaDTOById(@PathVariable("id") Integer id){
+        return categoriaService.pegarCategoriaDTOById(id);
     }
 
     @PostMapping
-    public Categoria criar(@RequestBody Categoria categoria){
-        return categoriaService.criar(categoria);
+    public CategoriaDTO criar(@RequestBody CategoriaDTO categoriaDTO){
+        return categoriaService.criar(categoriaDTO);
     }
 
     @PutMapping("/{id}")
-    public Categoria editar(
-            @RequestBody Categoria categoria,
+    public CategoriaDTO editar(
+            @RequestBody CategoriaDTO categoriaDTO,
             @PathVariable("id") Integer id){
-        return categoriaService.editar(categoria, id);
+        return categoriaService.editar(categoriaDTO, id);
     }
     @DeleteMapping("/{id}")
     public String deletar(
