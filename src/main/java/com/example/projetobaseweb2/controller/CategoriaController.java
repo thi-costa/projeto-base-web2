@@ -1,6 +1,8 @@
 package com.example.projetobaseweb2.controller;
 
 import com.example.projetobaseweb2.model.Categoria;
+import com.example.projetobaseweb2.service.CategoriaService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -10,61 +12,34 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/categorias")
 public class CategoriaController {
-    private List<Categoria> lista = new ArrayList<>();
-    private Integer contador = 1;
+    @Autowired
+    private CategoriaService categoriaService;
 
     @GetMapping
     public List<Categoria> listar(){
-        return lista;
+        return categoriaService.buscarTodos();
     }
     @GetMapping("/{id}")
-    public Categoria buscarCategoriaPorId(@PathVariable("id") Integer id){
-        for(Categoria categoria: lista){
-            if(categoria.getId().equals(id)) return categoria;
-        }
-        return null;
+    public Categoria pegarUm(@PathVariable("id") Integer id){
+        return categoriaService.pegarUm(id);
     }
 
     @PostMapping
     public Categoria criar(@RequestBody Categoria categoria){
-        categoria.setId(contador);
-        lista.add(categoria);
-        contador++;
-
-        return categoria;
+        return categoriaService.criar(categoria);
     }
 
     @PutMapping("/{id}")
     public Categoria editar(
             @RequestBody Categoria categoria,
             @PathVariable("id") Integer id){
-        categoria.setId(id);
-        for(Categoria item: lista){
-            if(item.getId().equals(id)){
-                item.setNome(categoria.getNome());
-                item.setDescricao(categoria.getDescricao());
-
-                return categoria;
-            }
-        }
-        return null;
-
+        return categoriaService.editar(categoria, id);
     }
     @DeleteMapping("/{id}")
-    public String editar(
+    public String deletar(
             @PathVariable("id") Integer id){
-        int contador = 0;
-
-        for(Categoria categoria: lista){
-            if(categoria.getId().equals(id)){
-                lista.remove(contador);
-                return "Categoria com id " + id + " deletado com sucessp!";
-            }
-            contador++;
-        }
-
-        return "ID: " + id + " não encontrado!";
-
+        categoriaService.deletar(id);
+        return  "Categoria com id " + id + " removido com sucesso!";
     }
 
 }
