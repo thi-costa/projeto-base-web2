@@ -8,10 +8,10 @@ import java.util.List;
 public class CategoriaDBMemory {
     private List<CategoriaDTO> lista = new ArrayList<>();
     private Integer contador = 1;
-    public List<CategoriaDTO> buscarTodos(){
+    public List<CategoriaDTO> listar(){
         return lista;
     }
-    public CategoriaDTO pegarUm(Integer id){
+    public CategoriaDTO pegarPorId(Integer id){
         for(CategoriaDTO categoria : lista){
             if(categoria.getId().equals(id)) return categoria;
         }
