@@ -2,6 +2,7 @@ package com.example.projetobaseweb2.service;
 
 import com.example.projetobaseweb2.model.dto.CategoriaDTO;
 import com.example.projetobaseweb2.model.entity.CategoriaEntity;
+import com.example.projetobaseweb2.model.mapper.CategoriaMapper;
 import com.example.projetobaseweb2.repository.CategoriaDBMemory;
 import com.example.projetobaseweb2.repository.CategoriaRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -15,46 +16,51 @@ import java.util.Optional;
 public class CategoriaService {
     @Autowired
     private CategoriaRepository repository;
-    public CategoriaDTO pegarCategoriaDTOById(Integer id){
+    @Autowired
+    private CategoriaMapper mapper;
+    public CategoriaDTO pegarPorId(Integer id){
         Optional<CategoriaEntity> categoriaEntityOp = repository.findById(id);
 
         if(categoriaEntityOp.isPresent()){
             CategoriaEntity categoriaEntity = categoriaEntityOp.get();
-            return new CategoriaDTO().update(categoriaEntity);
+            return mapper.update(categoriaEntity);
 
         }
 
-        throw new EntityNotFoundException();
+        throw new EntityNotFoundException("Categoria não encontrada");
     }
     public List<CategoriaDTO> listar(){
         List<CategoriaEntity> listaEntities = repository.findAll();
-        return listaEntities.stream()
-                .map(categoriaEntity -> new CategoriaDTO().update(categoriaEntity))
-                .toList();
+        return mapper.updateListDTO(listaEntities);
     }
 
     public CategoriaDTO criar(CategoriaDTO categoriaDTO){
-        CategoriaEntity categoria = new CategoriaEntity().update(categoriaDTO);
+        CategoriaEntity categoria = mapper.update(categoriaDTO);
         categoria = repository.save(categoria);
 
-        return new CategoriaDTO().update(categoria);
+        return mapper.update(categoria);
     }
-    public CategoriaDTO editar(CategoriaDTO categoria, Integer id){
-        Optional<CategoriaEntity> categoriaEntityOp = repository.findById(id);
+    public CategoriaDTO editar(CategoriaDTO categoriaDTO, Integer id){
+        if(repository.existsById(id)){
+            CategoriaEntity categoriaEntity = mapper.update(categoriaDTO);
+            categoriaEntity.setId(id);
+            categoriaEntity = repository.save(categoriaEntity);
 
-        if(categoriaEntityOp.isPresent()){
-            CategoriaEntity categoriaEntity = categoriaEntityOp.get();
-            return new CategoriaDTO().update(categoriaEntity);
-
+            return mapper.update(categoriaEntity);
         }
 
-        throw new EntityNotFoundException();
+        throw new EntityNotFoundException("Categoria não encontrada");
     }
     public void deletar(Integer id){
         Optional<CategoriaEntity> categoriaEntityOp = repository.findById(id);
 
-        categoriaEntityOp.ifPresent(categoriaEntity -> repository.delete(categoriaEntity));
+        if(categoriaEntityOp.isPresent()){
+            CategoriaEntity categoriaEntity = categoriaEntityOp.get();
+            repository.delete(categoriaEntity);
+            return ;
+        }
 
-        throw new EntityNotFoundException();
+        throw new EntityNotFoundException("Categoria não encontrada");
+
     }
 }
