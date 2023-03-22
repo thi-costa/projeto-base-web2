@@ -2,11 +2,9 @@ package com.example.projetobaseweb2.model.entity;
 
 import com.example.projetobaseweb2.model.dto.CategoriaDTO;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-@Getter
-@Setter
+@Data
 @Entity
 @Table(name = "categoria")
 public class CategoriaEntity {
@@ -18,11 +16,4 @@ public class CategoriaEntity {
     private String nome;
     @Column(name = "descricao")
     private String descricao;
-
-    public CategoriaEntity update(CategoriaDTO categoria){
-        this.id = categoria.getId();
-        this.nome = categoria.getNome();
-        this.descricao = categoria.getDescricao();
-        return this;
-    }
 }
